@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using ProductManagement.Infrastructure.IOC;
 using ProductManagement.Infrastructure.Persistence;
 
 namespace ProductManagement.Presentation
@@ -11,9 +12,7 @@ namespace ProductManagement.Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            //EF core db context service
-            builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddInfrastructureServices(builder.Configuration);
 
 
             builder.Services.AddControllers();
