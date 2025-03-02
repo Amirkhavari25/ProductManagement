@@ -19,9 +19,9 @@ namespace ProductManagement.Application.Features.Products.Queries.GetProducts
             _productRepository = productRepository;
             _mapper = mapper;
         }
-        public Task<List<ProductDTO>> Handle(GetProductQuery request, CancellationToken cancellationToken)
+        public async Task<List<ProductDTO>> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
-            var products = _productRepository.GetAllAsync();
+            var products =await _productRepository.GetAllAsync();
             return _mapper.Map<List<ProductDTO>>(products);
         }
     }

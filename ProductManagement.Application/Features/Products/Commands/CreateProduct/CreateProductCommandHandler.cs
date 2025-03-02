@@ -25,7 +25,7 @@ namespace ProductManagement.Application.Features.Products.Commands.CreateProduct
         {
             var product = _mapper.Map<Product>(request);
             await _productRepository.AddAsync(product);
-            return product.Id;
+            return product.ID;
         }
     }
 
