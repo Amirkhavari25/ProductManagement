@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProductManagement.Infrastructure.IOC;
 using ProductManagement.Infrastructure.Persistence;
+using ProductManagement.Presentation.Middleware;
 
 namespace ProductManagement.Presentation
 {
@@ -36,6 +37,8 @@ namespace ProductManagement.Presentation
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            //exception logger middleware
+            app.UseExceptionMiddleware();
 
             app.UseHttpsRedirection();
 

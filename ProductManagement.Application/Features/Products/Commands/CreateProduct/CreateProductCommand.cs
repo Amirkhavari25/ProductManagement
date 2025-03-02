@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProductManagement.Application.Features.Products.Commands.CreateProduct
 {
-    public record CreateProductCommand() : IRequest<Guid>;
+    public record CreateProductCommand(string Name, string ManufactureEmail,
+        string ManufacturePhone, DateTime ProduceDate, bool IsAvailable) : IRequest<Guid>;
 
 }
