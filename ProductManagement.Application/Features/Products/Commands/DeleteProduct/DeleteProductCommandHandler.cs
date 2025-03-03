@@ -2,6 +2,7 @@
 using MediatR;
 using ProductManagement.Application.Common.Exceptions;
 using ProductManagement.Application.Contracts.Persistence;
+using ProductManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace ProductManagement.Application.Features.Products.Commands.DeleteProduct
             var product = await _productRepository.GetByIdAsync(request.Id);
             if (product == null)
             {
-                throw new NotFoundException(nameof(product),request.Id);
+                throw new NotFoundException(nameof(Product),request.Id);
             }
             await _productRepository.DeleteAsync(product);
         }

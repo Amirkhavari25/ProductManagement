@@ -3,6 +3,7 @@ using MediatR;
 using ProductManagement.Application.Common.Exceptions;
 using ProductManagement.Application.Contracts.Persistence;
 using ProductManagement.Application.DTOs;
+using ProductManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace ProductManagement.Application.Features.Products.Queries.GetProductById
             var product = await _productRepository.GetByIdAsync(request.Id);
             if (product == null)
             {
-                throw new NotFoundException(nameof(product), product.ID);
+                throw new NotFoundException(nameof(Product), request.Id);
             }
             return _mapper.Map<ProductDTO>(product);
         }

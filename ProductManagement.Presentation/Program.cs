@@ -1,5 +1,7 @@
 
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ProductManagement.Application;
 using ProductManagement.Infrastructure.IOC;
 using ProductManagement.Infrastructure.Persistence;
 using ProductManagement.Presentation.Middleware;
@@ -20,6 +22,12 @@ namespace ProductManagement.Presentation
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //add mediatR dependency
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssemblyReference).Assembly));
+            //add dependency to AutoMapper
+            builder.Services.AddAutoMapper(typeof(ApplicationAssemblyReference).Assembly);
+
 
             var app = builder.Build();
 

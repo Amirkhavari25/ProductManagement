@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Features.Products.Commands.CreateProduct;
+using ProductManagement.Application.Features.Products.Commands.UpdateProduct;
 using ProductManagement.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace ProductManagement.Application.Common.Mapper
         public ProductMapperProfile()
         {
             CreateMap<CreateProductCommand, Product>();
+            CreateMap<UpdateProductCommand, Product>();
             CreateMap<Product, ProductDTO>();
         }
     }

@@ -27,6 +27,7 @@ namespace ProductManagement.Infrastructure.Persistence.Repositories
         public async Task DeleteAsync(Product product)
         {
             product.IsDeleted = true;
+            product.DateDeleted = DateTime.Now;
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
         }
