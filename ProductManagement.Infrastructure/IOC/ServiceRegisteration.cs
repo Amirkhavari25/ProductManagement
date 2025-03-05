@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProductManagement.Application.Contracts.Persistence;
@@ -18,6 +19,12 @@ namespace ProductManagement.Infrastructure.IOC
         {
             services.AddDbContext<AppDBContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            //Identity dependencies
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddRoles<IdentityRole>() 
+                .AddEntityFrameworkStores<AppDBContext>()
+                .AddDefaultTokenProviders();
 
             services.AddScoped<IProductRepository, ProductRepository>();
 

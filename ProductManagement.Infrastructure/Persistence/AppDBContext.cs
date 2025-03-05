@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProductManagement.Domain.Entities;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ProductManagement.Infrastructure.Persistence
 {
-    public class AppDBContext : IdentityDbContext
+    public class AppDBContext : IdentityDbContext<ApplicationUser>
     {
         public AppDBContext(DbContextOptions<AppDBContext> options):base(options) { }
         public DbSet<Product> Products { get; set; }
@@ -38,5 +39,10 @@ namespace ProductManagement.Infrastructure.Persistence
                 .HasMaxLength(50);
         }
 
+    }
+
+    public class ApplicationUser : IdentityUser
+    {
+        public string FullName { get; set; } = string.Empty; 
     }
 }
