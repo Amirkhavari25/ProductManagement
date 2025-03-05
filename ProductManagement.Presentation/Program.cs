@@ -22,7 +22,7 @@ namespace ProductManagement.Presentation
             // Add services to the container.
             builder.Services.AddInfrastructureServices(builder.Configuration);
 
-
+            //JWT Setting
             var JWTSetting = builder.Configuration.GetSection("JWTSetting");
             var SecretKey = Encoding.UTF8.GetBytes(JWTSetting["TokenSecret"]);
             builder.Services.AddAuthentication(opt =>

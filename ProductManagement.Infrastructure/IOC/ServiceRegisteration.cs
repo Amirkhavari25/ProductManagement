@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProductManagement.Application.Contracts.Interfaces;
 using ProductManagement.Application.Contracts.Persistence;
 using ProductManagement.Infrastructure.Persistence;
 using ProductManagement.Infrastructure.Persistence.Repositories;
+using ProductManagement.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +24,13 @@ namespace ProductManagement.Infrastructure.IOC
 
             //Identity dependencies
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddRoles<IdentityRole>() 
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDBContext>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }
