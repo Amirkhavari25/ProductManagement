@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace ProductManagement.DependencyInjection
 {
@@ -28,29 +30,35 @@ namespace ProductManagement.DependencyInjection
             //JWT Setting
             var JWTSetting = configuration.GetSection("JWTSetting");
             var SecretKey = Encoding.UTF8.GetBytes(JWTSetting["TokenSecret"]);
-            services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(opt =>
-            {
-                opt.RequireHttpsMetadata = false; // for developement enviroment no need to use exactly HTTPS
-                opt.SaveToken = true;
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(SecretKey),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidIssuer = JWTSetting["Issuer"],
-                    ValidAudience = JWTSetting["Audience"]
-                };
-            });
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                  .AddJwtBearer(options =>
+                  {
+                      options.TokenValidationParameters = new TokenValidationParameters
+                      {
+                          ValidateIssuer = true,
+                          ValidateAudience = true,
+                          ValidateLifetime = true,
+                          ValidIssuer = JWTSetting["Issuer"],
+                          ValidAudience = JWTSetting["Audience"],
+                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTSetting["TokenSecret"]))
+                      };
 
+                      options.Events = new JwtBearerEvents
+                      {
+                          OnChallenge = context =>
+                          {
+                              Console.WriteLine("OnChallenge triggered");
+                              context.Response.StatusCode = 401; // Unauthorized
+                              context.Response.ContentType = "application/json";
+                              return Task.CompletedTask;
 
+                          }
+                      };
+                  });
 
-            //Identity dependencies
+            
+
+            // Identity Configuration
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -61,15 +69,24 @@ namespace ProductManagement.DependencyInjection
                 options.Password.RequiredUniqueChars = 0;
 
                 options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
+                options.User.AllowedUserNameCharacters = "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
             })
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<AppDBContext>()
-                .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<AppDBContext>()
+            .AddDefaultTokenProviders();
 
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    context.Response.ContentType = "application/json";
+                    return context.Response.WriteAsync("{\"error\": \"Unauthorized\"}");
+                };
+            });
 
             return services;
         }

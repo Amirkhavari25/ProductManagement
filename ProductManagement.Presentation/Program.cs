@@ -19,9 +19,10 @@ namespace ProductManagement.Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddInfrastructureServices(builder.Configuration);            
+            // Add services to the container
+            builder.Services.AddInfrastructureServices(builder.Configuration);
 
+            // Add authorization
             builder.Services.AddAuthorization();
 
             builder.Services.AddControllers();
@@ -54,18 +55,21 @@ namespace ProductManagement.Presentation
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            //exception logger middleware
-            app.UseExceptionMiddleware();
 
             app.UseHttpsRedirection();
 
+            app.UseRouting();
+
             app.UseAuthentication();
+
             app.UseAuthorization();
 
+            //exception logger middleware
+            app.UseExceptionMiddleware();
 
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

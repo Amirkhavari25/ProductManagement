@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Application.DTOs;
@@ -10,6 +11,7 @@ using ProductManagement.Application.Features.Products.Queries.GetProducts;
 
 namespace ProductManagement.Presentation.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -28,6 +30,7 @@ namespace ProductManagement.Presentation.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ProductDTO>>> GetAll()
         {
             var products = await _mediator.Send(new GetProductQuery());
@@ -35,6 +38,7 @@ namespace ProductManagement.Presentation.Controllers
         }
 
         [HttpGet("{Id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid Id)
         {
             var product = await _mediator.Send(new GetProductByIdQuery(Id));
